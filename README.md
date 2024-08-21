@@ -19,3 +19,8 @@ account:
     app_id: <app id>  
     secret: <client secret>  
 ```
+
+### To-do
+* output tables to cli
+* unit test
+* use postgres (in a docker container)
