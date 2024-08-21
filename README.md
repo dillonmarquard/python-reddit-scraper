@@ -2,14 +2,18 @@
 
 ## Setup
 
+python: 3.9.17
+pyyaml: 6.0.2
+
 ### Authentication
-We will use secrets.yaml to store our api secret in the following format.  
+We will use config.yaml to store our api secret in the following format.  
 You can create an app here (https://www.reddit.com/prefs/apps).  
   
-(secrets.yaml)  
+config.yaml
 ```YAML  
-accounts:  
-    <username>:  
-        client: <client id>  
-        secret: <client secret>  
+account:  
+    username: <username>
+    app_name: <app name>
+    app_id: <app id>  
+    secret: <client secret>  
 ```
