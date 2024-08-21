@@ -7,7 +7,7 @@ We will use secrets.yaml to store our api secret in the following format.
 You can create an app here (https://www.reddit.com/prefs/apps).  
   
  
-```yaml (secrets.yaml)  
+```YAML (secrets.yaml)  
 accounts:  
     <username>:  
         client: <client id>  
