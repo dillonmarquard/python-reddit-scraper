@@ -2,4 +2,11 @@
 
 ## Setup
 
-## AUTH
+### Authentication
+We will use secrets.yaml to store our api secret in the following format.
+"""
+accounts:
+    <username>:
+        client: <client id>
+        secret: <client secret>
+"""
