@@ -14,9 +14,9 @@ def main():
     api = reddit_interface.RedditAPI(user['username'], user['app_name'], user['app_id'], user['secret'])
     print(api)
 
-    thread_list, comment_list = api.get_threads("python", start_date=datetime.datetime(2024,8,18))
-    print(thread_list[1])
-    print(comment_list[1])
+    thread_list, comment_list = api.get_subreddit_data("python", start_date=datetime.datetime(2024,8,18))
+    print(thread_list)
+    print(comment_list)
 
     db = db_interface.SqLiteDB()
     db.insert_update_post(thread_list)

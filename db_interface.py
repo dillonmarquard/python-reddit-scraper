@@ -6,10 +6,10 @@ class SqLiteDB:
     """A sqlite3 interface to save subreddit post and comment data"""
     
     def __init__(self):
-        self._url = "reddit-of02j.db"
+        self._url = "reddit.db"
         self._con = sqlite3.connect(self._url)
         self._cur = self._con.cursor()
-        with open("table-def.sql") as f:
+        with open("reddit-db-init.sql") as f:
             self._cur.executescript(f.read())
             self._con.commit()
 
