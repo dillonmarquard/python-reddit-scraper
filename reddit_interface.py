@@ -10,6 +10,7 @@ import warnings
 class Comment:
     comment_id: str
     thread_id: str
+    parent_id: str
     username: str
     upvotes: int
     post_date: float
@@ -46,7 +47,7 @@ class RedditAPI:
         return Thread(submission.id, submission.selftext, submission.author.name, submission.score, submission.created_utc, submission.permalink)
 
     def reddit_submission_to_comments(self, submission) -> list[Comment]:
-        return [Comment(comment.id, comment.link_id, comment.author.name, comment.score, comment.created_utc, comment.body) for comment in submission.comments.list() if comment.author != None]
+        return [Comment(comment.id, comment.link_id, comment.parent_id, comment.author.name, comment.score, comment.created_utc, comment.body) for comment in submission.comments.list() if comment.author != None]
 
     def get_subreddit_data(self, subreddit: str, start_date: datetime.datetime = datetime.datetime(2024,1,1), end_date: datetime.datetime = datetime.datetime.today()):
         within_period = lambda thread: thread.created_utc >= start_date.timestamp()
@@ -60,5 +61,6 @@ class RedditAPI:
 
         if min(thread_list, key=min_post_date).post_date > (start_date + datetime.timedelta(hours=24)).timestamp():
             # we will display this warning when the last post returned is more than 24 hours after the requested start_date.
-            warnings.warn("Reddit's API only returns the last 1000 posts, which may not include posts up to the requested date.")
+            warnings.warn("Reddit's API only returns up to the last 1000 posts, which may not include posts up to the requested date.")
+
         return thread_list, comment_list

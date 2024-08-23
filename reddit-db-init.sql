@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS Thread (
 CREATE TABLE IF NOT EXISTS Comment (
     comment_id TEXT PRIMARY KEY,
     thread_id TEXT,
+    parent_id TEXT,
     username TEXT,
     upvotes INTEGER,
     post_date REAL,
