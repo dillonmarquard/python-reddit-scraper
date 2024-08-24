@@ -35,7 +35,7 @@ class Subreddit:
 class RedditAPI:
     """Reddit API wrapper for pulling subreddit and (sub-)comment data"""
 
-    def __init__(self, username: str, app: str, client: str, secret: str):
+    def __init__(self, username: str, app: str, client: str, secret: str, password: str):
         self._client = client
         self._secret = secret
         self._user_agent = f"{platform.system()}:{app}:v0.1.0 (by u/{username})"
@@ -44,7 +44,9 @@ class RedditAPI:
             client_id = self._client,
             client_secret = self._secret,
             user_agent = self._user_agent,
-            ratelimit_seconds = 300,
+            username = username,
+            password = password,
+            ratelimit_seconds = 600,
         )
 
     def __str__(self) -> str:
@@ -54,14 +56,14 @@ class RedditAPI:
         return Thread(submission.id, submission.subreddit.id, submission.selftext, str(submission.author), submission.score, submission.created_utc, submission.permalink)
 
     def reddit_submission_to_comments(self, submission) -> list[Comment]:
-        submission.comments.replace_more(limit=None, threshold=250)
+        submission.comments.replace_more(limit=None, threshold=100)
         return [Comment(comment.id, comment.link_id, comment.parent_id, str(comment.author), comment.score, comment.created_utc, comment.body) for comment in submission.comments.list() if not isinstance(comment, MoreComments)] # .replace_more()
 
     def get_subreddit_data(self, subreddit: str, start_date: datetime.datetime = datetime.datetime(2024,1,1), end_date: datetime.datetime = datetime.datetime.today()):
         within_period = lambda thread: thread.created_utc >= start_date.timestamp()
         min_post_date = lambda thread: thread.post_date
 
-        submissions = next(self._reddit.info(subreddits=[subreddit])).new(limit=1000)
+        submissions = self._reddit.subreddit(subreddit).new(limit=1000)
         valid_submissions1, valid_submissions2 = tee(filter(within_period, submissions))
 
         thread_list = list(map(self.reddit_submission_to_thread, valid_submissions1))

@@ -3,6 +3,10 @@ import datetime
 import argparse
 import re
 
+# from itertools import chain
+
+# import praw
+
 import reddit_interface
 import db_interface            
 
@@ -10,12 +14,12 @@ import logging
 
 def main():
 
-    handler = logging.StreamHandler()
-    handler.setLevel(logging.DEBUG)
-    for logger_name in ("praw", "prawcore"):
-        logger = logging.getLogger(logger_name)
-        logger.setLevel(logging.DEBUG)
-        logger.addHandler(handler)
+    # handler = logging.StreamHandler()
+    # handler.setLevel(logging.DEBUG)
+    # for logger_name in ("praw", "prawcore"):
+    #     logger = logging.getLogger(logger_name)
+    #     logger.setLevel(logging.DEBUG)
+    #     logger.addHandler(handler)
 
     with open("config.yaml", 'r') as stream:
         config = yaml.safe_load(stream)
@@ -36,7 +40,7 @@ def main():
 
     if args.Update:
         user = config['account']
-        api = reddit_interface.RedditAPI(user['username'], user['app_name'], user['app_id'], user['secret'])
+        api = reddit_interface.RedditAPI(user['username'], user['app_name'], user['app_id'], user['secret'], user['password'])
 
         thread_list, comment_list = api.get_subreddit_data(subreddit, start_date=datetime.datetime.fromtimestamp(float(args.Date)))
         db.insert_update_post(thread_list)
@@ -45,6 +49,12 @@ def main():
     if args.print:
         db.display_db(max_depth=0)
 
-    
+    # subreddits = list(api._reddit.info(subreddits=['python']))
+    # subreddit = subreddits[0]
+    # threads = list(api._reddit.info(fullnames=['t3_'+submission.id for submission in subreddit.new(limit=None)]))
+    # print([reddit_interface.Thread(submission.id, submission.subreddit.id, submission.selftext, str(submission.author), submission.score, submission.created_utc, submission.permalink) for submission in threads])
+    # comments = list(chain.from_iterable([thread.comments for thread in threads]))
+    # print(comments)
+
 
 main()
