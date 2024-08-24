@@ -1,5 +1,6 @@
 CREATE TABLE IF NOT EXISTS Thread (
     thread_id TEXT PRIMARY KEY,
+    subreddit_id TEXT,
     original_post TEXT,
     username TEXT,
     upvotes INTEGER,
@@ -15,4 +16,9 @@ CREATE TABLE IF NOT EXISTS Comment (
     upvotes INTEGER,
     post_date REAL,
     comment TEXT
+);
+
+CREATE TABLE IF NOT EXISTS Subreddit (
+    subreddit_id TEXT PRIMARY KEY,
+    subreddit_name TEXT
 );

@@ -19,12 +19,18 @@ class Comment:
 @dataclass
 class Thread:
     thread_id: str
+    subreddit_id: str
     original_post: str
     username: str
     upvotes: int
     post_date: float
     url: str
-    
+
+@dataclass
+class Subreddit:
+    subreddit_id: str
+    subreddit_name: str
+
 class RedditAPI:
     """Reddit API wrapper for pulling subreddit and (sub-)comment data"""
 
@@ -44,10 +50,10 @@ class RedditAPI:
         return self._user_agent
 
     def reddit_submission_to_thread(self, submission) -> Thread:
-        return Thread(submission.id, submission.selftext, submission.author.name, submission.score, submission.created_utc, submission.permalink)
+        return Thread(submission.id, submission.subreddit.id, submission.selftext, submission.author.name, submission.score, submission.created_utc, submission.permalink)
 
     def reddit_submission_to_comments(self, submission) -> list[Comment]:
-        return [Comment(comment.id, comment.link_id, comment.parent_id, comment.author.name, comment.score, comment.created_utc, comment.body) for comment in submission.comments.list() if comment.author != None]
+        return [Comment(comment.id, comment.link_id, comment.parent_id, str(comment.author), comment.score, comment.created_utc, comment.body) for comment in submission.comments.list()] # .replace_more()
 
     def get_subreddit_data(self, subreddit: str, start_date: datetime.datetime = datetime.datetime(2024,1,1), end_date: datetime.datetime = datetime.datetime.today()):
         within_period = lambda thread: thread.created_utc >= start_date.timestamp()
