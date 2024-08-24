@@ -10,12 +10,12 @@ import logging
 
 def main():
 
-    # handler = logging.StreamHandler()
-    # handler.setLevel(logging.DEBUG)
-    # for logger_name in ("praw", "prawcore"):
-    #     logger = logging.getLogger(logger_name)
-    #     logger.setLevel(logging.DEBUG)
-    #     logger.addHandler(handler)
+    handler = logging.StreamHandler()
+    handler.setLevel(logging.DEBUG)
+    for logger_name in ("praw", "prawcore"):
+        logger = logging.getLogger(logger_name)
+        logger.setLevel(logging.DEBUG)
+        logger.addHandler(handler)
 
     with open("config.yaml", 'r') as stream:
         config = yaml.safe_load(stream)

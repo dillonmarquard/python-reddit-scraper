@@ -61,7 +61,7 @@ class RedditAPI:
         within_period = lambda thread: thread.created_utc >= start_date.timestamp()
         min_post_date = lambda thread: thread.post_date
 
-        submissions = self._reddit.subreddit(subreddit).new(limit=1000)
+        submissions = next(self._reddit.info(subreddits=[subreddit])).new(limit=1000)
         valid_submissions1, valid_submissions2 = tee(filter(within_period, submissions))
 
         thread_list = list(map(self.reddit_submission_to_thread, valid_submissions1))
