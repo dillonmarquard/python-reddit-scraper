@@ -3,6 +3,7 @@ import platform
 import datetime
 from itertools import chain, tee
 
+from praw.models import MoreComments
 from dataclasses import dataclass
 import warnings
 
@@ -50,16 +51,17 @@ class RedditAPI:
         return self._user_agent
 
     def reddit_submission_to_thread(self, submission) -> Thread:
-        return Thread(submission.id, submission.subreddit.id, submission.selftext, submission.author.name, submission.score, submission.created_utc, submission.permalink)
+        return Thread(submission.id, submission.subreddit.id, submission.selftext, str(submission.author), submission.score, submission.created_utc, submission.permalink)
 
     def reddit_submission_to_comments(self, submission) -> list[Comment]:
-        return [Comment(comment.id, comment.link_id, comment.parent_id, str(comment.author), comment.score, comment.created_utc, comment.body) for comment in submission.comments.list()] # .replace_more()
+        submission.comments.replace_more(limit=None, threshold=250)
+        return [Comment(comment.id, comment.link_id, comment.parent_id, str(comment.author), comment.score, comment.created_utc, comment.body) for comment in submission.comments.list() if not isinstance(comment, MoreComments)] # .replace_more()
 
     def get_subreddit_data(self, subreddit: str, start_date: datetime.datetime = datetime.datetime(2024,1,1), end_date: datetime.datetime = datetime.datetime.today()):
         within_period = lambda thread: thread.created_utc >= start_date.timestamp()
         min_post_date = lambda thread: thread.post_date
 
-        submissions = self._reddit.subreddit(subreddit).new(limit=25)
+        submissions = self._reddit.subreddit(subreddit).new(limit=1000)
         valid_submissions1, valid_submissions2 = tee(filter(within_period, submissions))
 
         thread_list = list(map(self.reddit_submission_to_thread, valid_submissions1))

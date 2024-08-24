@@ -1,4 +1,5 @@
 import sqlite3
+import datetime
 from dataclasses import dataclass
 
 from reddit_interface import Subreddit, Thread, Comment
@@ -31,7 +32,8 @@ def gen_comment_forest(thread, comment_list): # for a specific thread
     return ThreadComments(thread, cf)
 
 def rec_display_comments(tc, depth=1, max_depth=0) -> None:
-    print('\t'*depth,'|', tc.comment.comment_id, tc.comment.username, len(tc.comment.comment))
+    print('\t'*depth, end='')
+    print(tc.comment.comment_id, datetime.datetime.fromtimestamp(tc.comment.post_date).strftime('%d %b, %Y'), tc.comment.username, tc.comment.upvotes, tc.comment.comment[0:min(len(tc.comment.comment), 50)].replace('\n',''), len(tc.comment.comment), sep=' | ')
     if max_depth and depth > max_depth: # 0 implies no depth limit
         return
     for comment in tc.children:
@@ -105,8 +107,9 @@ class SqLiteDB:
         # 0 implies no max depth limit
         subreddit_dict = self.get_subreddit_threads()
         for subreddit in subreddit_dict:
-            print('\t',subreddit, len(subreddit_dict[subreddit]))
+            print('\t', subreddit)
             for tc in subreddit_dict[subreddit]:
+                print('\t',end='')
+                print(tc.thread.thread_id, datetime.datetime.fromtimestamp(tc.thread.post_date).strftime('%d %b, %Y'), tc.thread.username, tc.thread.original_post[0:min(len(tc.thread.original_post),50)].replace('\n',''), sep=' | ')
                 for comment in tc.comments: # for each top-level comment
                     rec_display_comments(comment, 1, max_depth)
-                print('\t','|', tc.thread.thread_id, len(tc.comments))

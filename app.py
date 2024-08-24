@@ -6,43 +6,44 @@ import re
 import reddit_interface
 import db_interface            
 
+import logging
+
 def main():
+
+    # handler = logging.StreamHandler()
+    # handler.setLevel(logging.DEBUG)
+    # for logger_name in ("praw", "prawcore"):
+    #     logger = logging.getLogger(logger_name)
+    #     logger.setLevel(logging.DEBUG)
+    #     logger.addHandler(handler)
 
     with open("config.yaml", 'r') as stream:
         config = yaml.safe_load(stream)
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-r", "--Subreddit", help = "Choose a Subreddit by name (eg. python)", required=True)
-
+    parser = argparse.ArgumentParser(prog="Reddit Scraper")
+    parser.add_argument("-r", "--subreddit", help = "Choose a subreddit by name or url (eg. python or https://www.reddit.com/r/python/)", required=True)
+    parser.add_argument("-U", "--Update", help = "Update the database for the selected subreddit", action='count', default=0)
+    parser.add_argument("-p", "--print", help = "Print the database for the selected subreddit", action='count', default=0)
+    parser.add_argument("-d", "--Date", help="Specify the timeframe to pull subreddit data until", default="1704067200.0")
     args = parser.parse_args()
 
-    subreddit = args.Subreddit.lower()
+    subreddit = args.subreddit.lower()
+    if 'https://www.reddit.com/r/' in subreddit:
+        subreddit = re.findall('https://www.reddit.com/r/(.+)/',subreddit)[0]
 
-    print(subreddit)
-
-    user = config['account']
-
-    # api = reddit_interface.RedditAPI(user['username'], user['app_name'], user['app_id'], user['secret'])
-    # print(api)
-
-    # thread_list, comment_list = api.get_subreddit_data(subreddit, start_date=datetime.datetime(2024,8,22))
-    # print(thread_list)
-    # print(comment_list)
-
+    
     db = db_interface.SqLiteDB()
-    # db.insert_update_post(thread_list)
-    # db.insert_update_comment(comment_list)
 
-    # del thread_list
-    # del comment_list
+    if args.Update:
+        user = config['account']
+        api = reddit_interface.RedditAPI(user['username'], user['app_name'], user['app_id'], user['secret'])
 
-    thread_list = db.get_threads()
-    comment_list = db.get_comments()
+        thread_list, comment_list = api.get_subreddit_data(subreddit, start_date=datetime.datetime.fromtimestamp(float(args.Date)))
+        db.insert_update_post(thread_list)
+        db.insert_update_comment(comment_list)
 
-    # print(thread_list)
-    # print(comment_list)
-
-    db.display_db(3)
+    if args.print:
+        db.display_db(max_depth=0)
 
     
 

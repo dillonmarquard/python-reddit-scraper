@@ -17,8 +17,3 @@ CREATE TABLE IF NOT EXISTS Comment (
     post_date REAL,
     comment TEXT
 );
-
-CREATE TABLE IF NOT EXISTS Subreddit (
-    subreddit_id TEXT PRIMARY KEY,
-    subreddit_name TEXT
-);

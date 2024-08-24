@@ -3,15 +3,18 @@
 ## Setup
 
 python: 3.9.17  
-pyyaml: 6.0.2  
-sqlite3: 3.41.2  
+pyyaml: 6.0.2 
 praw: 7.7.1  
-
-### Authentication
-We will use config.yaml to store our api secret in the following format.  
-You can create an app here (https://www.reddit.com/prefs/apps).  
   
-config.yaml
+```  
+pip install -r requirements.txt
+```  
+
+### Authentication  
+We will use config.yaml to store our api secret in the following format.   
+You can create (private script) app here (https://www.reddit.com/prefs/apps) to obtain credentials.   
+  
+(config.yaml)
 ```YAML  
 account:  
     username: <username>
@@ -20,7 +23,5 @@ account:
     secret: <client secret>  
 ```
 
-### To-do
-* output tables to cli
-* unit test
-* use postgres (in a docker container)
+### Future Considerations
+* improve throughput despite api rate-limiting
