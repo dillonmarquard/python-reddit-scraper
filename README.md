@@ -23,5 +23,12 @@ account:
     secret: <client secret>  
 ```
 
+### Example Commands
+
+```PYTHON
+# pulls data for the python subreddit since Aug 20th, 2024 and pretty prints the database to the command line.
+python app.py -r python -U -p -d 1724137200
+```
+
 ### Future Considerations
 * improve throughput despite api rate-limiting
