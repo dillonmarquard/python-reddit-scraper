@@ -33,7 +33,7 @@ def gen_comment_forest(thread, comment_list): # for a specific thread
 
 def rec_display_comments(tc, depth=1, max_depth=0) -> None:
     print('\t'*depth, end='')
-    print(tc.comment.comment_id, datetime.datetime.fromtimestamp(tc.comment.post_date).strftime('%d %b, %Y'), tc.comment.username, tc.comment.upvotes, tc.comment.comment[0:min(len(tc.comment.comment), 50)].replace('\n',''), len(tc.comment.comment), sep=' | ')
+    print(tc.comment.comment_id, datetime.datetime.fromtimestamp(tc.comment.post_date).strftime('%d %b, %Y'), tc.comment.username, tc.comment.upvotes, tc.comment.comment[0:min(len(tc.comment.comment), 50)].replace('\n',''), sep=' | ')
     if max_depth and depth > max_depth: # 0 implies no depth limit
         return
     for comment in tc.children:
