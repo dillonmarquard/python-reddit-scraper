@@ -23,7 +23,7 @@ def main():
     parser = argparse.ArgumentParser(prog="Reddit Scraper")
     parser.add_argument("-r", "--subreddit", help = "Choose a subreddit by name or url (eg. python or https://www.reddit.com/r/python/)", required=True)
     parser.add_argument("-U", "--Update", help = "Update the database for the selected subreddit", action='count', default=0)
-    parser.add_argument("-p", "--print", help = "Print the database for the selected subreddit", action='count', default=0)
+    parser.add_argument("-p", "--print", help = "Print the database", action='count', default=0)
     parser.add_argument("-d", "--Date", help="Specify the unixtime to pull subreddit data until", default="1704067200.0")
     args = parser.parse_args()
 

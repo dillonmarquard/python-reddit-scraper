@@ -30,5 +30,18 @@ account:
 python app.py -r python -U -p -d 1724137200
 ```
 
+
+```
+usage: Reddit Scraper [-h] -r SUBREDDIT [-U] [-p] [-d DATE]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -r SUBREDDIT, --subreddit SUBREDDIT
+                        Choose a subreddit by name or url (eg. python or https://www.reddit.com/r/python/)
+  -U, --Update          Update the database for the selected subreddit
+  -p, --print           Print the database
+  -d DATE, --Date DATE  Specify the unixtime to pull subreddit data until (eg. 1724137200)
+```
+
 ### Future Considerations
 * improve throughput despite api rate-limiting
