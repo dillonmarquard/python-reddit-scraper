@@ -26,7 +26,7 @@ account:
 ### Example Commands
 
 ```PYTHON
-# pulls data for the python subreddit since Aug 20th, 2024 and pretty prints the database to the command line.
+# pulls data for the aoe2 subreddit since Aug 20th, 2024 and pretty prints the database to the command line.
 python app.py -r aoe2 -U -p -d 1724137200
 ```
 
