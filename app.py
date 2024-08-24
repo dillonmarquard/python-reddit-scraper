@@ -40,7 +40,7 @@ def main():
 
     if args.Update:
         user = config['account']
-        api = reddit_interface.RedditAPI(user['username'], user['app_name'], user['app_id'], user['secret'], user['password'])
+        api = reddit_interface.RedditAPI(user['username'], user['app_name'], user['app_id'], user['secret'])
 
         thread_list, comment_list = api.get_subreddit_data(subreddit, start_date=datetime.datetime.fromtimestamp(float(args.Date)))
         db.insert_update_post(thread_list)

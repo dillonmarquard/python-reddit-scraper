@@ -35,7 +35,7 @@ class Subreddit:
 class RedditAPI:
     """Reddit API wrapper for pulling subreddit and (sub-)comment data"""
 
-    def __init__(self, username: str, app: str, client: str, secret: str, password: str):
+    def __init__(self, username: str, app: str, client: str, secret: str):
         self._client = client
         self._secret = secret
         self._user_agent = f"{platform.system()}:{app}:v0.1.0 (by u/{username})"
@@ -45,7 +45,6 @@ class RedditAPI:
             client_secret = self._secret,
             user_agent = self._user_agent,
             username = username,
-            password = password,
             ratelimit_seconds = 600,
         )
 
