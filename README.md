@@ -2,9 +2,9 @@
 
 ## Setup
 
-python: 3.9.17  
-pyyaml: 6.0.2 
-praw: 7.7.1  
+python: 3.9.17    
+pyyaml: 6.0.2   
+praw: 7.7.1    
   
 ```  
 pip install -r requirements.txt
