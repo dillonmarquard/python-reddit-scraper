@@ -21,6 +21,7 @@ def main():
     #     logger.setLevel(logging.DEBUG)
     #     logger.addHandler(handler)
 
+    # a further improvement would be using vault to run the script and collect any secrets within a firewall.
     with open("config.yaml", 'r') as stream:
         config = yaml.safe_load(stream)
 
@@ -31,30 +32,31 @@ def main():
     parser.add_argument("-d", "--Date", help="Specify the unixtime to pull subreddit data until", default="1704067200.0")
     args = parser.parse_args()
 
+    # we can extract the subreddit the user wants to update here
     subreddit = args.subreddit.lower()
     if 'https://www.reddit.com/r/' in subreddit:
         subreddit = re.findall('https://www.reddit.com/r/(.+)/',subreddit)[0]
 
-    
+    # create the database if it doesnt exist, and connect to it
     db = db_interface.SqLiteDB()
 
     if args.Update:
         user = config['account']
+        # use the api key to access the reddit api
         api = reddit_interface.RedditAPI(user['username'], user['app_name'], user['app_id'], user['secret'])
 
+        # get a list of threads and comments from the reddit api for the specified subreddit
         thread_list, comment_list = api.get_subreddit_data(subreddit, start_date=datetime.datetime.fromtimestamp(float(args.Date)))
+
+        # update the database with the fresh subreddit data 
         db.insert_update_post(thread_list)
         db.insert_update_comment(comment_list)
 
     if args.print:
-        db.display_db(max_depth=0)
-
-    # subreddits = list(api._reddit.info(subreddits=['python']))
-    # subreddit = subreddits[0]
-    # threads = list(api._reddit.info(fullnames=['t3_'+submission.id for submission in subreddit.new(limit=None)]))
-    # print([reddit_interface.Thread(submission.id, submission.subreddit.id, submission.selftext, str(submission.author), submission.score, submission.created_utc, submission.permalink) for submission in threads])
-    # comments = list(chain.from_iterable([thread.comments for thread in threads]))
-    # print(comments)
-
+        # print the entirety of the database 
+        # subreddit
+        #   thread list
+        #       comment tree
+        db.display_db(max_depth=0) # specify the comment tree depth to print (eg. 0 is the entire tree, 1 would print 1 sub-comment)
 
 main()

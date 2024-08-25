@@ -4,6 +4,7 @@ from dataclasses import dataclass
 
 from reddit_interface import Subreddit, Thread, Comment
 
+# these dataclasses are used to generate the comment tree used to display the subreddits, threads, and comments.
 @dataclass
 class CommentForest: # children of top-level comments
     comment: Comment
@@ -19,6 +20,7 @@ class SubredditThreads:
     subreddit: Subreddit
     threads: list[ThreadComments]
 
+# recursive funcitons for creating a tree of comments
 def rec_forest(p, comment_list):
     children = []
     for c in filter(lambda t: t.parent_id[3:] == p.comment_id, comment_list):
@@ -31,6 +33,7 @@ def gen_comment_forest(thread, comment_list): # for a specific thread
     cf = [rec_forest(tlc, thread_comments) for tlc in filter(lambda t: t.parent_id[0:3] == 't3_', thread_comments)]
     return ThreadComments(thread, cf)
 
+# formatting for displaying the comments
 def rec_display_comments(tc, depth=1, max_depth=0) -> None:
     print('\t'*depth, end='')
     print(tc.comment.comment_id, datetime.datetime.fromtimestamp(tc.comment.post_date).strftime('%d %b, %Y'), tc.comment.username, tc.comment.upvotes, tc.comment.comment[0:min(len(tc.comment.comment), 100)].replace('\n',''), sep=' | ')
@@ -71,6 +74,7 @@ class SqLiteDB:
         self._cur.executemany(sql, res)
         self._con.commit()
 
+    # used to update the subreddit table, should it be needed at a later date
     def insert_update_subreddit(self) -> None:
         pass
 
@@ -107,9 +111,11 @@ class SqLiteDB:
         # 0 implies no max depth limit
         subreddit_dict = self.get_subreddit_threads()
         for subreddit in subreddit_dict:
+            # formatting for displaying the subreddit info
             print('\t', subreddit)
             for tc in subreddit_dict[subreddit]:
                 print('\t',end='')
+                # formatting for displaying the threads
                 print(tc.thread.thread_id, datetime.datetime.fromtimestamp(tc.thread.post_date).strftime('%d %b, %Y'), tc.thread.username, tc.thread.original_post[0:min(len(tc.thread.original_post),100)].replace('\n',''), sep=' | ')
                 for comment in tc.comments: # for each top-level comment
                     rec_display_comments(comment, 1, max_depth)
